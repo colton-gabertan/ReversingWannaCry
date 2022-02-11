@@ -71,7 +71,7 @@ Essentially, this initial binary hides the rest of the malware by storing an emb
 
 ### Recap:
 
-Just to solidify what we've observed so far, WannaCry begins stealthily by loading one of the binary's resources into an executable file, and executing it as a process.
+Just to solidify what we've observed so far, WannaCry begins stealthily by writing one of the binary's resources into an executable file, and executing it as a process.
 
 ![image](https://user-images.githubusercontent.com/66766340/153566969-82ea565e-d7b6-4eb0-b6a7-669a2eb84eb0.png)
 
