@@ -75,6 +75,21 @@ Just to solidify what we've observed so far, WannaCry begins stealthily by writi
 
 ![image](https://user-images.githubusercontent.com/66766340/153566969-82ea565e-d7b6-4eb0-b6a7-669a2eb84eb0.png)
 
+## W101 - Resource written to mssecsvc.exe
+
+After extracting the resource, I took a look at this binary via CFF Explorer and saw that we will have to dig further to gain more intel on it.
+
+### CFF Explorer
+![image](https://user-images.githubusercontent.com/66766340/153568475-d8fd1360-5731-4dd8-ba99-a8705e4a7587.png)
+
+Although, we can't get the resource to be detected as a PE file, pressing on with Ghidra almost says otherwise. There are no imports, which is odd and a bunch of functions. A lot more than the binary that created the process. 
+
+After finding it strange that there are no imports detected by the other utilities, I looked at the strings of the binary and it became clear that this malware hides its imports and PE info as strings and imports these during execution. 
+
+### W101 Strings
+![image](https://user-images.githubusercontent.com/66766340/153569755-fe3b82a8-bea6-4757-b71e-0627ca8dd902.png)
+
+Based on that snippet alone, it's apparent that this binary could have a lot of power with the ability to write to files, create them, launch processes, and more.
 
 
 
