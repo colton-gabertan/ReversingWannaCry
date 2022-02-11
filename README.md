@@ -69,6 +69,13 @@ With this information, hopping back into `PlayGame()`, we can see that it is the
 
 Essentially, this initial binary hides the rest of the malware by storing an embedded program into its resources, which it later calls upon to continue execution. This is more likely where we will see the main processes of WannaCry. We know for sure that it looked for a resource called 101. So, I deployed Resource Hacker on the binary to find resource 101 stored in a folder called "W". From here, I extracted the resource in to a separate .bin file, W101.bin. 
 
+### Recap:
+
+Just to solidify what we've observed so far, WannaCry begins stealthily by loading one of the binary's resources into an executable file, and executing it as a process.
+
+![image](https://user-images.githubusercontent.com/66766340/153566969-82ea565e-d7b6-4eb0-b6a7-669a2eb84eb0.png)
+
+
 
 
 [here]: https://github.com/colton-gabertan/xcjg-honeypot/blob/Index/README.md
