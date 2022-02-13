@@ -17,7 +17,7 @@ This repo will be going over my process of analysis for this sample, explaining 
 > * [PEiD]
 > * [Resource Hacker]
 
-## Static Analysis:
+## Loader Analysis:
 
 To begin, I decided to isolate my malware analysis environment by working in a virtual machine and cutting off its connection to my network. WannaCry is commonly spread as a worm, which is exactly how I caught it. Setting up the vm environment without network connectivity is essential in ensuring that none of it leaked into my local network during analysis.
 Due to our analysis being static, meaning we will not run the binary, there is low risk to us; however, it is a good habit to take precautions when working with actual malicious software.
