@@ -16,6 +16,7 @@ This repo will be going over my process of analysis for this sample, explaining 
 > * [CFF Explorer VIII]
 > * [PEiD]
 > * [Resource Hacker]
+> * [Detect It Easy]
 
 ## Loader Analysis:
 
@@ -62,14 +63,14 @@ Onto the next function that gets called by `PlayGame()`, `FUN_100010ab()`. Withi
 ### Decompilation of `createBadProcess()`
 ![image](https://user-images.githubusercontent.com/66766340/152450092-c8f8c213-acb1-402a-b1fa-8b72ac505540.png)
 
-With this information, hopping back into `PlayGame()`, we can see that it is the function responsible for unpacking the rest of the malware and running it as a process on the host machine.
+With this information, hopping back into `PlayGame()`, we can see that it is the function responsible for unpacking the rest of the malware and running it as a process on the host machine. This technique is called "Process Injection". 
 
 ### `PlayGame() Re-visited`
 ![image](https://user-images.githubusercontent.com/66766340/152451395-425a011a-1448-4fe6-81d6-54498124d5ae.png)
 
-Essentially, this initial binary hides the rest of the malware by storing an embedded program into its resources, which it later calls upon to continue execution. This is more likely where we will see the main processes of WannaCry. We know for sure that it looked for a resource called 101. So, I deployed Resource Hacker on the binary to find resource 101 stored in a folder called "W". From here, I extracted the resource in to a separate .bin file, W101.bin. 
+Essentially, this initial binary hides the rest of the malware by storing an embedded program into its resources, which it later calls upon to continue execution. This is more likely where we will see the main functionality of WannaCry. We know for sure that it looked for a resource called 101. So, I deployed Resource Hacker on the binary to find resource 101 stored in a folder called "W". From here, I extracted the resource in to a separate .bin file, W101.bin. 
 
-### Recap:
+### Recap - Loading Via Process Injection:
 
 Just to solidify what we've observed so far, WannaCry begins stealthily by writing one of the binary's resources into an executable file, and executing it as a process.
 
@@ -82,16 +83,21 @@ After extracting the resource, I took a look at this binary via CFF Explorer and
 ### CFF Explorer
 ![image](https://user-images.githubusercontent.com/66766340/153568475-d8fd1360-5731-4dd8-ba99-a8705e4a7587.png)
 
-Although, we can't get the resource to be detected as a PE file, pressing on with Ghidra almost says otherwise. There are no imports, which is odd and a bunch of functions. A lot more than the binary that created the process. 
+Although, we can't get the resource to be detected as a PE file, pressing on with Ghidra almost says otherwise. There are no imports, which is odd, and a bunch of functions. A lot more than the binary that created the process. 
 
 After finding it strange that there are no imports detected by the other utilities, I looked at the strings of the binary and it became clear that this malware hides its imports and PE info as strings and imports these during execution. 
 
 ### W101 Strings
 ![image](https://user-images.githubusercontent.com/66766340/153569755-fe3b82a8-bea6-4757-b71e-0627ca8dd902.png)
 
-Based on that snippet alone, it's apparent that this binary could have a lot of power with the ability to write to files, create them, launch processes, and more.
+Based on that snippet alone, it's apparent that this binary could have a lot of power with the ability to write to files, create them, launch processes, and more. This is also an indication that this resource binary is packed further. There are a couple of reasons why we can see the code of the binary, but have it not be readable to the system as a PE file. 
 
+The first one being that when the file gets mapped to memory, the headers are pulled apart and stored at different segments in memory. Programs can still function when not mapped contiguously in memory, because they rely on pointers. To confirm further that this binary is a packed PE file, I decided to check it out with Detect It Easy. There is an option to check out the memory map of the file, and we can see the classic PE file header when doing so. 
 
+### Memory Map of Resource Binary
+![image](https://user-images.githubusercontent.com/66766340/153747804-03ba47d3-20f0-436c-8c32-fbc53b7d0903.png)
+
+From here, one thing we can do is try to map it by its virtual addresses, hopefully rendering the file in actual PE format. 
 
 [here]: https://github.com/colton-gabertan/xcjg-honeypot/blob/Index/README.md
 [FLAREVM]: https://github.com/mandiant/flare-vm
@@ -101,3 +107,4 @@ Based on that snippet alone, it's apparent that this binary could have a lot of 
 [CFF Explorer VIII]: https://ntcore.com/?page_id=388
 [PEiD]: https://www.softpedia.com/get/Programming/Packers-Crypters-Protectors/PEiD-updated.shtml
 [Resource Hacker]: https://resource-hacker.en.softonic.com/
+[Detect It Easy]: https://github.com/horsicq/Detect-It-Easy
