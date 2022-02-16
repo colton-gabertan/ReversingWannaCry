@@ -30,7 +30,7 @@ One place I like to start is in the import directory to see what .exe's or .dll'
 ### File Header Info
 ![image](https://user-images.githubusercontent.com/66766340/152454687-38cf8643-3eb8-41f1-91a3-3424f62b41ed.png)
 
-So far, that's actually nothing too bad; however, KERNEL32.dll is used for core functions such as handling memory, files, and hardware. A closer look at MSVCRT.dll and we can find ntdll.dll, which is unusual for regular programs to import. And, it is used as an interface to the Windows kernel. I wanted to double check that the binary wasn't packed, with PEiD. Sure enough, it's detected as a C++ binary.
+KERNEL32.dll is used for core functions such as handling memory, files, and hardware. A closer look at MSVCRT.dll and we can find ntdll.dll, which is unusual for regular programs to import. And, it is used as an interface to the Windows kernel. I wanted to double check that the binary wasn't packed, with PEiD. Sure enough, it's detected as a C++ binary.
 
 ### Dependency Walker 
 ![image](https://user-images.githubusercontent.com/66766340/152458168-f3759bd1-95ad-473c-890a-0093446fe2a1.png)
