@@ -92,12 +92,34 @@ After finding it strange that there are no imports detected by the other utiliti
 
 Based on that snippet alone, it's apparent that this binary could have a lot of power with the ability to write to files, create them, launch processes, and more. This is also an indication that this resource binary is packed further. There are a couple of reasons why we can see the code of the binary, but have it not be readable to the system as a PE file. 
 
-The first one being that when the file gets mapped to memory, the headers are pulled apart and stored at different segments in memory. Programs can still function when not mapped contiguously in memory, because they rely on pointers. To confirm further that this binary is a packed PE file, I decided to check it out with Detect It Easy. There is an option to check out the memory map of the file, and we can see the classic PE file header when doing so. 
+## Dynamic Analysis
 
-### Memory Map of Resource Binary
-![image](https://user-images.githubusercontent.com/66766340/153747804-03ba47d3-20f0-436c-8c32-fbc53b7d0903.png)
+The easy approach to get a cleaner binary of its resource in proper format would be to switch to dynamic analysis. The goal is to run the code up until the point that it writes to the malicious exe, then stop execution. To do so, we must recall the static analysis and use the information we gained in order to run this malware safely.
 
-From here, one thing we can do is try to map it by its virtual addresses, hopefully rendering the file in actual PE format. 
+Within the strings, I found the actual name of the binary, which is appropriately called `loader.dll`. After renaming it, it was time to crack open x32dbg as it is a PE32dll file. 
+
+The nice thing about running dll's with x32dbg is that it automatically creates a loader.exe in order to call the functions from the dynamic link libray. Usually, in a user defined dll, we can find a nice entry point. The way I was able to do it was to do
+```
+options >> prefrences >> DLL Entry
+```
+
+### Finding the Entry Point
+![image](https://user-images.githubusercontent.com/66766340/154437233-661fb5cd-12ce-4c6a-b458-391f1f1bcca5.png)
+
+After hitting run, it should hit the system breakpoint, and another round should land us at the entry breakpoint. At this point, we will be able to access the malware author's code and execute it. In order to find the `PlayGame()` function, I took a look at the symbols, noted the address of the function and over-wrote EIP to point to it.
+
+### Pointing EIP to PlayGame()
+![image](https://user-images.githubusercontent.com/66766340/154437700-92220b18-6a2b-4dfa-bebc-861b98f86bd9.png)
+![image](https://user-images.githubusercontent.com/66766340/154438926-26ced046-7b34-41f3-868c-f320a66abc1d.png)
+
+Here, we can see the disassembly of `PlayGame()`. There's the initial call to `sprintf()` to write the `mssecsvc_path` string, then the two calls after that write the resource to `mssecsvc.exe` and run it as a process. We will execute until we get `mssecsvc.exe` in the path on our system.
+
+### Disassembly of `PlayGame()`
+![image](https://user-images.githubusercontent.com/66766340/154439047-8e7175fa-6366-46cf-9956-2cba7fd2eb14.png)
+
+
+
+
 
 [here]: https://github.com/colton-gabertan/xcjg-honeypot/blob/Index/README.md
 [FLAREVM]: https://github.com/mandiant/flare-vm
