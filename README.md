@@ -18,7 +18,7 @@ This repo will be going over my process of analysis for this sample, explaining 
 > * [Resource Hacker]
 > * [Detect It Easy]
 
-## Loader Analysis:
+## loader.dll Analysis - Static:
 
 To begin, I decided to isolate my malware analysis environment by working in a virtual machine and cutting off its connection to my network. WannaCry is commonly spread as a worm, which is exactly how I caught it. Setting up the vm environment without network connectivity is essential in ensuring that none of it leaked into my local network during analysis.
 Due to our analysis being static, meaning we will not run the binary, there is low risk to us; however, it is a good habit to take precautions when working with actual malicious software.
@@ -76,7 +76,7 @@ Just to solidify what we've observed so far, WannaCry begins stealthily by writi
 
 ![image](https://user-images.githubusercontent.com/66766340/153566969-82ea565e-d7b6-4eb0-b6a7-669a2eb84eb0.png)
 
-## W101 - Resource written to mssecsvc.exe
+## mssecsvc.exe Analysis - Static:
 
 After extracting the resource, I took a look at this binary via CFF Explorer and saw that we will have to dig further to gain more intel on it.
 
@@ -92,7 +92,7 @@ After finding it strange that there are no imports detected by the other utiliti
 
 Based on that snippet alone, it's apparent that this binary could have a lot of power with the ability to write to files, create them, launch processes, and more. This is also an indication that this resource binary is packed further. There are a couple of reasons why we can see the code of the binary, but have it not be readable to the system as a PE file. 
 
-## Dynamic Analysis
+## Loader Analysis - Dynamic:
 
 The easy approach to get a cleaner binary of its resource in proper format would be to switch to dynamic analysis. The goal is to run the code up until the point that it writes to the malicious exe, then stop execution. To do so, we must recall the static analysis and use the information we gained in order to run this malware safely.
 
