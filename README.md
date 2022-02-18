@@ -10,13 +10,15 @@ This repo will be going over my process of analysis for this sample, explaining 
 * Determining exactly what the malicious binary does from high to low level
 
 ---
-> Tools Used:
+> Tools Used: \
+> *all are included in the FLAREVM
 > * [FLAREVM]
 > * [Ghidra]
 > * [CFF Explorer VIII]
 > * [PEiD]
 > * [Resource Hacker]
 > * [Detect It Easy]
+> * [x32dbg]
 
 ## loader.dll Analysis - Static:
 
@@ -130,3 +132,4 @@ Here, we can see the disassembly of `PlayGame()`. There's the initial call to `s
 [PEiD]: https://www.softpedia.com/get/Programming/Packers-Crypters-Protectors/PEiD-updated.shtml
 [Resource Hacker]: https://resource-hacker.en.softonic.com/
 [Detect It Easy]: https://github.com/horsicq/Detect-It-Easy
+[x32dbg]: https://x64dbg.com/
