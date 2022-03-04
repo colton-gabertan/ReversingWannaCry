@@ -20,7 +20,7 @@ This repo will be going over my process of analysis for this sample, explaining 
 > * [Detect It Easy]
 > * [HxD]
 
-## loader.dll Analysis - Static:
+## launcher.dll Analysis - Static:
 
 To begin, I decided to isolate my malware analysis environment by working in a virtual machine and cutting off its connection to my network. WannaCry is commonly spread as a worm, which is exactly how I caught it. Setting up the vm environment without network connectivity is essential in ensuring that none of it leaked into my local network during analysis.
 Due to our analysis being static, meaning we will not run the binary, there is low risk to us; however, it is a good habit to take precautions when working with actual malicious software.
@@ -32,10 +32,7 @@ One place I like to start is in the import directory to see what .exe's or .dll'
 ### File Header Info
 ![image](https://user-images.githubusercontent.com/66766340/152454687-38cf8643-3eb8-41f1-91a3-3424f62b41ed.png)
 
-KERNEL32.dll is used for core functions such as handling memory, files, and hardware. A closer look at MSVCRT.dll and we can find ntdll.dll, which is unusual for regular programs to import. And, it is used as an interface to the Windows kernel. I wanted to double check that the binary wasn't packed, with PEiD. Sure enough, it's detected as a C++ binary.
-
-### Dependency Walker 
-![image](https://user-images.githubusercontent.com/66766340/152458168-f3759bd1-95ad-473c-890a-0093446fe2a1.png)
+KERNEL32.dll is used for core functions such as handling memory, files, and hardware. A closer look at MSVCRT.dll and we can find ntdll.dll, which is unusual for regular programs to import. And, it is used as an interface to the Windows kernel. I wanted to double check that the binary wasn't packed, with PEiD. Sure enough, it's detected as a C++ binary that is used as a dynamic link library.
 
 ### PEiD Info
 ![image](https://user-images.githubusercontent.com/66766340/152456233-8c3edbfa-7107-4589-b90a-e4adac35fa81.png)
@@ -87,12 +84,12 @@ After extracting the resource, I took a look at this binary via CFF Explorer and
 
 Although, we can't get the resource to be detected as a PE file, pressing on with Ghidra almost says otherwise. There are no imports, which is odd, and a bunch of functions. A lot more than the binary that created the process. 
 
-After finding it strange that there are no imports detected by the other utilities, I looked at the strings of the binary and it became clear that this malware hides its imports and PE info as strings and imports these during execution. 
+After finding it strange that there are no imports detected by the other utilities, I looked at the strings of the binary and it became clear that this binary contains PE file format information along with various imports and possibly more exports.
 
 ### W101 Strings
 ![image](https://user-images.githubusercontent.com/66766340/153569755-fe3b82a8-bea6-4757-b71e-0627ca8dd902.png)
 
-Based on that snippet alone, it's apparent that this binary could have a lot of power with the ability to write to files, create them, launch processes, and more. This is also an indication that this resource binary is packed further. There are a couple of reasons why we can see the code of the binary, but have it not be readable to the system as a PE file. 
+Based on that snippet alone, it's apparent that this binary could have a lot of power with the ability to write to files, create them, launch processes, and more. However, before moving forward or resorting to dynamic analysis of `loader.dll` to extract the file, we can take a closer look at the extracted resource and see if we can resolve the file format issue statically.
 
 ### Fixing the File Format
 
