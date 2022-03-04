@@ -18,7 +18,7 @@ This repo will be going over my process of analysis for this sample, explaining 
 > * [PEiD]
 > * [Resource Hacker]
 > * [Detect It Easy]
-> * [x32dbg]
+> * [HxD]
 
 ## loader.dll Analysis - Static:
 
@@ -114,4 +114,4 @@ Simply deleting these bytes and saving the rest of the hexdump allows us to expo
 [PEiD]: https://www.softpedia.com/get/Programming/Packers-Crypters-Protectors/PEiD-updated.shtml
 [Resource Hacker]: https://resource-hacker.en.softonic.com/
 [Detect It Easy]: https://github.com/horsicq/Detect-It-Easy
-[x32dbg]: https://x64dbg.com/
+[HxD]: https://mh-nexus.de/en/hxd/
