@@ -62,7 +62,8 @@ Onto the next function that gets called by `PlayGame()`, `FUN_100010ab()`. Withi
 ### Decompilation of `createBadProcess()`
 ![image](https://user-images.githubusercontent.com/66766340/152450092-c8f8c213-acb1-402a-b1fa-8b72ac505540.png)
 
-With this information, hopping back into `PlayGame()`, we can see that it is the function responsible for unpacking the rest of the malware and running it as a process on the host machine. This technique is called "Process Injection". 
+With this information, hopping back into `PlayGame()`, we can see that it is the function responsible for unpacking the rest of the malware and running it as a process on the host machine. This technique of creating its own process is a bit of a loud tactic. If we opened up the task manager, we would be able to see it running and just kill it from there.
+> A more sophisticated technique would be to attach itself to a running process. It would do so by locating a running process, allocating memory, and injecting code into the it. This can be referred to as "Process Injection".  
 
 ### `PlayGame() Re-visited`
 ![image](https://user-images.githubusercontent.com/66766340/152451395-425a011a-1448-4fe6-81d6-54498124d5ae.png)
@@ -89,7 +90,7 @@ After finding it strange that there are no imports detected by the other utiliti
 ### W101 Strings
 ![image](https://user-images.githubusercontent.com/66766340/153569755-fe3b82a8-bea6-4757-b71e-0627ca8dd902.png)
 
-Based on that snippet alone, it's apparent that this binary could have a lot of power with the ability to write to files, create them, launch processes, and more. However, before moving forward or resorting to dynamic analysis of `loader.dll` to extract the file, we can take a closer look at the extracted resource and see if we can resolve the file format issue statically.
+Based on that snippet alone, it's apparent that this binary could have a lot of power with the ability to write to files, create them, launch processes, and more. However, before moving forward or resorting to dynamic analysis of `launcher.dll` to extract the file, we can take a closer look at the extracted resource and see if we can resolve the file format issue statically.
 
 ### Fixing the File Format
 
